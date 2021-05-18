@@ -13,13 +13,15 @@ class JokeList extends Component {
   constructor(props) {
     super(props);
     let origJokes = JSON.parse(window.localStorage.getItem("jokes") || "[]");
-    let sortJokes = origJokes.sort((a,b) => b.votes - a.votes);
+    let sortJokes = origJokes.sort((a, b) => b.votes - a.votes);
     this.state = {
       jokes: sortJokes,
       loading: false,
     };
     this._seenJokes = new Set(this.state.jokes.map((j) => j.text));
     this.handleClick = this.handleClick.bind(this);
+    this.handleAllNew = this.handleAllNew.bind(this);
+    this.removeJoke = this.removeJoke.bind(this);
   }
 
   componentDidMount() {
@@ -29,31 +31,32 @@ class JokeList extends Component {
   }
 
   async getJokes() {
-      try{
-    let jokes = [];
-    while (jokes.length < this.props.jokesToGet) {
-      let res = await axios.get(API_URL, {
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      let newJoke = res.data.joke;
-      if (!this._seenJokes.has(newJoke)) {
-        jokes.push({ id: uuid(), text: res.data.joke, votes: 0 });
+    try {
+      let jokes = [];
+      while (jokes.length < this.props.jokesToGet) {
+        let res = await axios.get(API_URL, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+        let newJoke = res.data.joke;
+        if (!this._seenJokes.has(newJoke)) {
+          jokes.push({ id: uuid(), text: res.data.joke, votes: 0 });
+        }
       }
-    }
-    jokes = [...jokes, ...this.state.jokes]
-    let sortJokes = jokes.sort((a,b) => b.votes - a.votes);
-    this.setState(
-      (st) => ({
-        loading: false,
-        jokes: [...sortJokes],
-      }),
-      () =>
-        window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
-    );}catch(e){
-        alert(e);
-        this.setState({loading:false});
+      jokes = [...jokes, ...this.state.jokes];
+      let sortJokes = jokes.sort((a, b) => b.votes - a.votes);
+      this.setState(
+        (st) => ({
+          loading: false,
+          jokes: [...sortJokes],
+        }),
+        () =>
+          window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+      );
+    } catch (e) {
+      alert(e);
+      this.setState({ loading: false });
     }
   }
 
@@ -73,6 +76,17 @@ class JokeList extends Component {
     );
   }
 
+  removeJoke(id){
+      let jokes = this.state.jokes.filter(j => j.id !== id);
+      this.setState(st => ({
+          jokes: jokes
+      }));
+  }
+
+  handleAllNew() {
+    window.localStorage.clear();
+    this.setState({loading: true, jokes: []}, this.getJokes);
+  }
 
   render() {
     if (this.state.loading) {
@@ -96,6 +110,9 @@ class JokeList extends Component {
           <button className="JokeList-getmore" onClick={this.handleClick}>
             Fetch Jokes
           </button>
+          <button className="JokeList-getmore" onClick={this.handleAllNew}>
+            All New Jokes
+          </button>
         </div>
         <div className="JokeList-jokes">
           {this.state.jokes.map((joke) => (
@@ -105,6 +122,7 @@ class JokeList extends Component {
               votes={joke.votes}
               upvote={() => this.handleVote(joke.id, 1)}
               downvote={() => this.handleVote(joke.id, -1)}
+              removeJoke={() => this.removeJoke(joke.id)}
             />
           ))}
         </div>
