@@ -5,4 +5,7 @@
   .Joke-buttons {
     width: 30%;
   }
+  .Joke-votes::before {
+    transform: translateX(-40.5%);
+  }
 }
