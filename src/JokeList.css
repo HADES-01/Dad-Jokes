@@ -2,6 +2,7 @@
   display: flex;
   height: 80%;
   width: 80%;
+  flex-wrap: wrap;
 }
 
 .JokeList-sidebar {
@@ -11,6 +12,7 @@
   align-items: center;
   justify-content: center;
   width: 30%;
+  min-width: 200px;
   z-index: 2;
   text-align: center;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, j0.1),

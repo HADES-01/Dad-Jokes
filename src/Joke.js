@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Joke.scss";
+import "./JokeResp.css";
 
 class Joke extends Component {
   getColor() {

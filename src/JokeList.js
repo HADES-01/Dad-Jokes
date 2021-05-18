@@ -3,6 +3,7 @@ import axios from "axios";
 import uuid from "uuid/dist/v4";
 import Joke from "./Joke";
 import "./JokeList.css";
+import "./JokeListResp.css";
 
 const API_URL = "https://icanhazdadjoke.com/";
 
@@ -76,16 +77,16 @@ class JokeList extends Component {
     );
   }
 
-  removeJoke(id){
-      let jokes = this.state.jokes.filter(j => j.id !== id);
-      this.setState(st => ({
-          jokes: jokes
-      }));
+  removeJoke(id) {
+    let jokes = this.state.jokes.filter((j) => j.id !== id);
+    this.setState((st) => ({
+      jokes: jokes,
+    }));
   }
 
   handleAllNew() {
     window.localStorage.clear();
-    this.setState({loading: true, jokes: []}, this.getJokes);
+    this.setState({ loading: true, jokes: [] }, this.getJokes);
   }
 
   render() {
@@ -107,12 +108,14 @@ class JokeList extends Component {
             src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
             alt="emoji"
           />
-          <button className="JokeList-getmore" onClick={this.handleClick}>
-            Fetch Jokes
-          </button>
-          <button className="JokeList-getmore" onClick={this.handleAllNew}>
-            All New Jokes
-          </button>
+          <div className="JokeList-buttons">
+            <button className="JokeList-getmore" onClick={this.handleClick}>
+              Fetch Jokes
+            </button>
+            <button className="JokeList-getmore" onClick={this.handleAllNew}>
+              All New Jokes
+            </button>
+          </div>
         </div>
         <div className="JokeList-jokes">
           {this.state.jokes.map((joke) => (
