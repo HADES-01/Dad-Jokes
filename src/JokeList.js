@@ -72,8 +72,7 @@ class JokeList extends Component {
           j.id === id ? { ...j, votes: j.votes + delta } : j
         ),
       }),
-      () =>
-        window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+      () => window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
     );
   }
 
@@ -81,7 +80,7 @@ class JokeList extends Component {
     let jokes = this.state.jokes.filter((j) => j.id !== id);
     this.setState((st) => ({
       jokes: jokes,
-    }));
+    }), () => window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes)));
   }
 
   handleAllNew() {
